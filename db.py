@@ -19,6 +19,7 @@ async def init_pool():
         min_size=2,
         max_size=10,
         command_timeout=60,
+        server_settings={'statement_cache_size': '0'}
     )
 
 
