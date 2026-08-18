@@ -129,7 +129,7 @@ async def verify_otp(body: OTPVerifyBody, request: Request, response: Response):
         await merge_carts(f"guest:{guest}", f"user:{user['id']}")
 
     token = create_token(user["id"], "user", days=30)
-    response.set_cookie(USER_COOKIE, token, httponly=True, secure=True, samesite="lax", max_age=30 * 86400, path="/")
+    response.set_cookie(USER_COOKIE, token, httponly=True, secure=True, samesite="none", max_age=30 * 86400, path="/")
     return {"user": public_user(user), "is_new": is_new}
 
 
@@ -217,7 +217,7 @@ async def google_session(body: GoogleSessionBody, request: Request, response: Re
     if guest:
         await merge_carts(f"guest:{guest}", f"user:{user['id']}")
     token = create_token(user["id"], "user", days=30)
-    response.set_cookie(USER_COOKIE, token, httponly=True, secure=True, samesite="lax", max_age=30 * 86400, path="/")
+    response.set_cookie(USER_COOKIE, token, httponly=True, secure=True, samesite="none", max_age=30 * 86400, path="/")
     return {"user": public_user(user), "is_new": is_new}
 
 
@@ -243,7 +243,7 @@ async def admin_login(body: AdminLoginBody, request: Request, response: Response
         raise HTTPException(401, "Invalid email or password")
     await db.execute("DELETE FROM login_attempts WHERE id=$1", ident)
     token = create_token(admin["id"], "admin", hours=12)
-    response.set_cookie(ADMIN_COOKIE, token, httponly=True, secure=True, samesite="lax", max_age=12 * 3600, path="/")
+    response.set_cookie(ADMIN_COOKIE, token, httponly=True, secure=True, samesite="none", max_age=12 * 3600, path="/")
     return {"admin": {
         "id": admin["id"], "email": admin["email"], "name": admin.get("name", "Admin"),
         "role": admin.get("role", "super_admin"),
